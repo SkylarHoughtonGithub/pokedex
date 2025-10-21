@@ -7,22 +7,24 @@ import (
 )
 
 func main() {
+	cfg := &config{}
+
 	commands["help"] = cliCommand{
 		name:        "help",
 		description: "Displays a help message",
-		callback:    commandHelp,
+		callback:    func() error { return commandHelp() },
 	}
 
 	commands["map"] = cliCommand{
 		name:        "map",
 		description: "Displays a map of Pokedex locations",
-		callback:    commandHelp,
+		callback:    func() error { return commandMap(cfg) },
 	}
 
 	commands["bmap"] = cliCommand{
 		name:        "map",
 		description: "Displays a previous page of map of Pokedex locations",
-		callback:    commandHelp,
+		callback:    func() error { return commandMapB(cfg) },
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
