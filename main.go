@@ -22,7 +22,7 @@ func main() {
 	}
 
 	commands["mapb"] = cliCommand{
-		name:        "map",
+		name:        "mapb",
 		description: "Displays previous 20 location areas",
 		callback:    func() error { return commandMapB(cfg) },
 	}
