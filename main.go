@@ -17,13 +17,13 @@ func main() {
 
 	commands["map"] = cliCommand{
 		name:        "map",
-		description: "Displays a map of Pokedex locations",
+		description: "Displays next 20 location areas",
 		callback:    func() error { return commandMap(cfg) },
 	}
 
-	commands["bmap"] = cliCommand{
+	commands["mapb"] = cliCommand{
 		name:        "map",
-		description: "Displays a previous page of map of Pokedex locations",
+		description: "Displays previous 20 location areas",
 		callback:    func() error { return commandMapB(cfg) },
 	}
 
