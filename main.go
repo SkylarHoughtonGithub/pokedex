@@ -4,10 +4,15 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"time"
+
+	pokecache "github.com/skylarhoughtongithub/gopokedex/internal"
 )
 
 func main() {
 	cfg := &config{}
+
+	cache := pokecache.NewCache(5 * time.Minute)
 
 	commands["help"] = cliCommand{
 		name:        "help",
@@ -18,13 +23,13 @@ func main() {
 	commands["map"] = cliCommand{
 		name:        "map",
 		description: "Displays next 20 location areas",
-		callback:    func() error { return commandMap(cfg) },
+		callback:    func() error { return commandMap(cfg, cache) },
 	}
 
 	commands["mapb"] = cliCommand{
 		name:        "mapb",
 		description: "Displays previous 20 location areas",
-		callback:    func() error { return commandMapB(cfg) },
+		callback:    func() error { return commandMapB(cfg, cache) },
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
