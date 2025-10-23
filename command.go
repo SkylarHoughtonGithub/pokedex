@@ -8,10 +8,10 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(args ...string) error
 }
 
-func commandExit() error {
+func commandExit(args ...string) error {
 	println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
@@ -25,7 +25,7 @@ var commands = map[string]cliCommand{
 	},
 }
 
-func commandHelp() error {
+func commandHelp(args ...string) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	fmt.Println()

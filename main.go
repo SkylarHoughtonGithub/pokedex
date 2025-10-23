@@ -4,10 +4,19 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	pokecache "github.com/skylarhoughtongithub/gopokedex/internal"
 )
+
+func cleanInput(text string) []string {
+	lower := strings.ToLower(text)
+	trim := strings.TrimSpace(lower)
+	fields := strings.Fields(trim)
+
+	return fields
+}
 
 func main() {
 	cfg := &config{}
@@ -17,19 +26,25 @@ func main() {
 	commands["help"] = cliCommand{
 		name:        "help",
 		description: "Displays a help message",
-		callback:    func() error { return commandHelp() },
+		callback:    func(args ...string) error { return commandHelp(args...) },
 	}
 
 	commands["map"] = cliCommand{
 		name:        "map",
 		description: "Displays next 20 location areas",
-		callback:    func() error { return commandMap(cfg, cache) },
+		callback:    func(args ...string) error { return commandMap(cfg, cache, args...) },
 	}
 
 	commands["mapb"] = cliCommand{
 		name:        "mapb",
 		description: "Displays previous 20 location areas",
-		callback:    func() error { return commandMapB(cfg, cache) },
+		callback:    func(args ...string) error { return commandMapB(cfg, cache, args...) },
+	}
+
+	commands["explore"] = cliCommand{
+		name:        "explore",
+		description: "Explore a specific location area and list its Pokemon",
+		callback:    func(args ...string) error { return commandExplore(cache, args...) },
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
@@ -47,7 +62,7 @@ func main() {
 
 		cmd, exists := commands[cleanedLine[0]]
 		if exists {
-			err := cmd.callback()
+			err := cmd.callback(cleanedLine[1:]...)
 			if err != nil {
 				fmt.Println("Error:", err)
 			}
