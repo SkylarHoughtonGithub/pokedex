@@ -25,7 +25,7 @@ var commands = map[string]cliCommand{
 	},
 }
 
-func commandHelp(args ...string) error {
+func commandHelp() error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	fmt.Println()

@@ -26,7 +26,7 @@ func main() {
 	commands["help"] = cliCommand{
 		name:        "help",
 		description: "Displays a help message",
-		callback:    func(args ...string) error { return commandHelp(args...) },
+		callback:    func(args ...string) error { return commandHelp() },
 	}
 
 	commands["map"] = cliCommand{
@@ -45,6 +45,12 @@ func main() {
 		name:        "explore",
 		description: "Explore a specific location area and list its Pokemon",
 		callback:    func(args ...string) error { return commandExplore(cache, args...) },
+	}
+
+	commands["catch"] = cliCommand{
+		name:        "catch",
+		description: "Attempt to catch a Pokemon",
+		callback:    func(args ...string) error { return commandCatch(cache, args...) },
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
