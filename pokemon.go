@@ -9,9 +9,18 @@ import (
 	pokecache "github.com/skylarhoughtongithub/gopokedex/internal"
 )
 
+type PokemonStat struct {
+	Name  string `json:"stat.name"`
+	Value int    `json:"base_stat"`
+}
+
 type Pokemon struct {
-	Name           string `json:"name"`
-	BaseExperience int    `json:"base_experience"`
+	Name           string        `json:"name"`
+	Height         int           `json:"height"`
+	Weight         int           `json:"weight"`
+	BaseExperience int           `json:"base_experience"`
+	Stats          []PokemonStat `json:"stats"`
+	Types          []string      `json"types"`
 }
 
 type PokemonResponse struct {
@@ -40,10 +49,26 @@ func commandCatch(cache *pokecache.Cache, args ...string) error {
 	fmt.Printf("Throwing a Pokeball at %s...\n", pokemon)
 
 	cachedData, found := cache.Get(url)
-	var pokemonDetails PokemonResponse
+	var pokemonResponse struct {
+		Name           string `json:"name"`
+		BaseExperience int    `json:"base_experience"`
+		Height         int    `json:"height"`
+		Weight         int    `json:"weight"`
+		Stats          []struct {
+			BaseStat int `json:"base_stat"`
+			Stat     struct {
+				Name string `json:"name"`
+			} `json:"stat"`
+		} `json:"stats"`
+		Types []struct {
+			Type struct {
+				Name string `json:"name"`
+			} `json:"type"`
+		} `json:"types"`
+	}
 
 	if found {
-		if err := json.Unmarshal(cachedData, &pokemonDetails); err != nil {
+		if err := json.Unmarshal(cachedData, &pokemonResponse); err != nil {
 			return fmt.Errorf("error unmarshaling cached data: %v", err)
 		}
 	} else {
@@ -53,27 +78,75 @@ func commandCatch(cache *pokecache.Cache, args ...string) error {
 		}
 		defer resp.Body.Close()
 
-		if err := json.NewDecoder(resp.Body).Decode(&pokemonDetails); err != nil {
+		if err := json.NewDecoder(resp.Body).Decode(&pokemonResponse); err != nil {
 			return err
 		}
 
-		responseBody, err := json.Marshal(pokemonDetails)
+		responseBody, err := json.Marshal(pokemonResponse)
 		if err != nil {
 			return err
 		}
 		cache.Add(url, responseBody)
 	}
 
-	catchProbability := calculateCatchProbability(pokemonDetails.BaseExperience)
+	catchProbability := calculateCatchProbability(pokemonResponse.BaseExperience)
 
 	if rand.Float64() < catchProbability {
 		fmt.Printf("%s was caught!\n", pokemon)
+
+		stats := []PokemonStat{}
+		for _, s := range pokemonResponse.Stats {
+			stats = append(stats, PokemonStat{
+				Name:  s.Stat.Name,
+				Value: s.BaseStat,
+			})
+		}
+
+		types := []string{}
+		for _, t := range pokemonResponse.Types {
+			types = append(types, t.Type.Name)
+		}
+
 		pokedex[pokemon] = Pokemon{
-			Name:           pokemonDetails.Name,
-			BaseExperience: pokemonDetails.BaseExperience,
+			Name:           pokemonResponse.Name,
+			Height:         pokemonResponse.Height,
+			Weight:         pokemonResponse.Weight,
+			BaseExperience: pokemonResponse.BaseExperience,
+			Stats:          stats,
+			Types:          types,
 		}
 	} else {
 		fmt.Printf("%s escaped!\n", pokemon)
+	}
+
+	return nil
+}
+
+func commandInspect(args ...string) error {
+	if len(args) == 0 {
+		return fmt.Errorf("please specify a pokemon to inspect")
+	}
+
+	pokemon := args[0]
+
+	p, exists := pokedex[pokemon]
+	if !exists {
+		fmt.Printf("You have not caught %s yet\n", pokemon)
+		return nil
+	}
+
+	fmt.Printf("Name: %s\n", p.Name)
+	fmt.Printf("Height: %d\n", p.Height)
+	fmt.Printf("Weight: %d\n", p.Weight)
+
+	fmt.Println("Stats:")
+	for _, stat := range p.Stats {
+		fmt.Printf("  -%s: %d\n", stat.Name, stat.Value)
+	}
+
+	fmt.Println("Types:")
+	for _, t := range p.Types {
+		fmt.Printf("  - %s\n", t)
 	}
 
 	return nil
