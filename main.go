@@ -59,6 +59,12 @@ func main() {
 		callback:    func(args ...string) error { return commandInspect(args...) },
 	}
 
+	commands["pokedex"] = cliCommand{
+		name:        "pokedex",
+		description: "List all Pokedex content",
+		callback:    func(args ...string) error { return commandPokedex() },
+	}
+
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")

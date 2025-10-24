@@ -152,3 +152,17 @@ func commandInspect(args ...string) error {
 
 	return nil
 }
+
+func commandPokedex() error {
+	if len(pokedex) == 0 {
+		fmt.Println("Your Pokedex is empty")
+	} else {
+
+		fmt.Println("Your Pokedex:")
+		for _, p := range pokedex {
+			fmt.Printf("  - %s\n", p.Name)
+		}
+	}
+
+	return nil
+}
