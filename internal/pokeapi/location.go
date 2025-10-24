@@ -55,7 +55,7 @@ func CommandMap(cfg *Config, cache *cache.Cache, args ...string) error {
 	return nil
 }
 
-func commandMapB(cfg *Config, cache *cache.Cache, args ...string) error {
+func CommandMapB(cfg *Config, cache *cache.Cache, args ...string) error {
 	if cfg.PrevURL == nil || *cfg.PrevURL == "" {
 		fmt.Println("You're on the first page")
 		return nil
@@ -99,7 +99,7 @@ func commandMapB(cfg *Config, cache *cache.Cache, args ...string) error {
 	return nil
 }
 
-func commandExplore(cache *cache.Cache, args ...string) error {
+func CommandExplore(cfg *Config, cache *cache.Cache, args ...string) error {
 	// validate input
 	if len(args) == 0 {
 		return fmt.Errorf("please specify a location area to explore")

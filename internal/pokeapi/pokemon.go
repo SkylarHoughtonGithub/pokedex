@@ -19,7 +19,7 @@ func calculateCatchProbability(baseExperience int) float64 {
 	return catchProbability
 }
 
-func commandCatch(cache *cache.Cache, args ...string) error {
+func CommandCatch(cfg *Config, cache *cache.Cache, args ...string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("please specify a pokemon to catch")
 	}
@@ -87,7 +87,7 @@ func commandCatch(cache *cache.Cache, args ...string) error {
 	return nil
 }
 
-func commandInspect(args ...string) error {
+func CommandInspect(args ...string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("please specify a pokemon to inspect")
 	}
@@ -118,7 +118,7 @@ func commandInspect(args ...string) error {
 	return nil
 }
 
-func commandPokedex() error {
+func CommandPokedex() error {
 	if len(pokedex) == 0 {
 		fmt.Println("Your Pokedex is empty")
 	} else {
