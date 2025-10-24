@@ -136,12 +136,13 @@ func commandInspect(args ...string) error {
 	}
 
 	fmt.Printf("Name: %s\n", p.Name)
+	fmt.Printf("Base Experience: %d\n", p.BaseExperience)
 	fmt.Printf("Height: %d\n", p.Height)
 	fmt.Printf("Weight: %d\n", p.Weight)
 
 	fmt.Println("Stats:")
 	for _, stat := range p.Stats {
-		fmt.Printf("  -%s: %d\n", stat.Name, stat.Value)
+		fmt.Printf("  - %s: %d\n", stat.Name, stat.Value)
 	}
 
 	fmt.Println("Types:")
