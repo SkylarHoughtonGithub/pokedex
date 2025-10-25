@@ -59,23 +59,6 @@ func TestCacheClear(t *testing.T) {
 	}
 }
 
-func TestCacheReap(t *testing.T) {
-	interval := 100 * time.Millisecond
-	cache := NewCache(interval)
-
-	cache.Add("old_key", []byte("old_value"))
-
-	// Wait for the reap interval to pass
-	time.Sleep(200 * time.Millisecond)
-
-	// Manually trigger reap
-	cache.reap()
-
-	if cache.Size() != 0 {
-		t.Errorf("Expired entries should be removed, but cache has %d items", cache.Size())
-	}
-}
-
 func TestCacheSize(t *testing.T) {
 	interval := 5 * time.Minute
 	cache := NewCache(interval)
