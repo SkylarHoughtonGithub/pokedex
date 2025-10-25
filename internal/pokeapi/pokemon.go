@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand/v2"
 	"net/http"
+	"os"
 
 	cache "github.com/skylarhoughtongithub/gopokedex/internal/cache"
 )
@@ -41,7 +42,11 @@ func CommandCatch(cfg *Config, cache *cache.Cache, args ...string) error {
 		if err != nil {
 			return err
 		}
-		defer resp.Body.Close()
+		defer func() {
+			if cerr := resp.Body.Close(); cerr != nil {
+				fmt.Fprintf(os.Stderr, "Error closing response body: %v\n", cerr)
+			}
+		}()
 
 		if err := json.NewDecoder(resp.Body).Decode(&pokemonResponse); err != nil {
 			return err

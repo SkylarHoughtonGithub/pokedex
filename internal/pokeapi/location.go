@@ -85,8 +85,6 @@ func CommandMapB(cfg *Config, cache *cache.Cache, args ...string) error {
 			}
 		}()
 
-		resp.Body.Close()
-
 		if err := json.NewDecoder(resp.Body).Decode(&locationAreas); err != nil {
 			return err
 		}
