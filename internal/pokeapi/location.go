@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	cache "github.com/skylarhoughtongithub/gopokedex/internal/cache"
@@ -30,7 +31,11 @@ func CommandMap(cfg *Config, cache *cache.Cache, args ...string) error {
 		if err != nil {
 			return err
 		}
-		defer resp.Body.Close()
+		defer func() {
+			if cerr := resp.Body.Close(); err != nil {
+				fmt.Fprintf(os.Stderr, "Error closing response body: %v\n", cerr)
+			}
+		}()
 
 		if err := json.NewDecoder(resp.Body).Decode(&locationAreas); err != nil {
 			return err
@@ -74,7 +79,13 @@ func CommandMapB(cfg *Config, cache *cache.Cache, args ...string) error {
 		if err != nil {
 			return err
 		}
-		defer resp.Body.Close()
+		defer func() {
+			if cerr := resp.Body.Close(); cerr != nil {
+				fmt.Fprintf(os.Stderr, "Error closing response body: %v\n", cerr)
+			}
+		}()
+
+		resp.Body.Close()
 
 		if err := json.NewDecoder(resp.Body).Decode(&locationAreas); err != nil {
 			return err
@@ -125,7 +136,11 @@ func CommandExplore(cfg *Config, cache *cache.Cache, args ...string) error {
 		if err != nil {
 			return err
 		}
-		defer resp.Body.Close()
+		defer func() {
+			if cerr := resp.Body.Close(); cerr != nil {
+				fmt.Fprintf(os.Stderr, "Error closing response %v\n", cerr)
+			}
+		}()
 
 		if err := json.NewDecoder(resp.Body).Decode(&locationDetails); err != nil {
 			return err
